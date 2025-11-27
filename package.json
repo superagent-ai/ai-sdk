@@ -1,0 +1,44 @@
+{
+  "name": "@superagent-ai/ai-sdk",
+  "version": "0.0.1",
+  "description": "Superagent guardrails tool for Vercel AI SDK",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "tsx --env-file=.env src/test.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "superagent",
+    "guardrails",
+    "ai-sdk",
+    "vercel",
+    "ai",
+    "tools"
+  ],
+  "author": "Superagent",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "dotenv": "^17.2.3",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "ai": "^5.0.0",
+    "zod": "^4.0.0"
+  }
+}
