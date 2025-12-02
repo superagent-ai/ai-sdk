@@ -2,7 +2,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 function guard(config = {}) {
-  const { apiKey = process.env.SUPERAGENT_API_KEY } = config;
+  const { apiKey = process.env.SUPERAGENT_API_KEY, systemPrompt } = config;
   return tool({
     description: "Analyze user input for security threats such as prompt injection, system prompt extraction, or data exfiltration attempts. Use this to classify and detect malicious intent in user-provided text, PDF files, or URLs.",
     inputSchema: z.object({
@@ -14,9 +14,12 @@ function guard(config = {}) {
       ),
       url: z.string().url().optional().describe(
         "URL to a PDF file to download and analyze for security threats. Provide either text, file, or url."
+      ),
+      systemPrompt: z.string().optional().describe(
+        "Optional system prompt to customize the classification logic and steer the guard behavior."
       )
     }),
-    execute: async ({ text, file, url }) => {
+    execute: async ({ text, file, url, systemPrompt: runtimeSystemPrompt }) => {
       if (!apiKey) {
         throw new Error(
           "SUPERAGENT_API_KEY is required. Set it in environment variables or pass it in config."
@@ -34,6 +37,10 @@ function guard(config = {}) {
       }
       if (url) {
         requestBody.url = url;
+      }
+      const effectiveSystemPrompt = runtimeSystemPrompt ?? systemPrompt;
+      if (effectiveSystemPrompt) {
+        requestBody.system_prompt = effectiveSystemPrompt;
       }
       try {
         const response = await fetch("https://app.superagent.sh/api/guard", {

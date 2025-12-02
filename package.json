@@ -1,6 +1,6 @@
 {
   "name": "@superagent-ai/ai-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Superagent guardrails tool for Vercel AI SDK",
   "type": "module",
   "main": "./dist/index.js",
