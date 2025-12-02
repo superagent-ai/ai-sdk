@@ -7,6 +7,11 @@ export type GuardConfig = {
    * If not provided, will use SUPERAGENT_API_KEY environment variable.
    */
   apiKey?: string;
+  /**
+   * Optional system prompt to customize the classification logic.
+   * Allows you to steer the guard behavior for your specific use case.
+   */
+  systemPrompt?: string;
 };
 
 /**

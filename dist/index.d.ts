@@ -9,6 +9,11 @@ type GuardConfig = {
      * If not provided, will use SUPERAGENT_API_KEY environment variable.
      */
     apiKey?: string;
+    /**
+     * Optional system prompt to customize the classification logic.
+     * Allows you to steer the guard behavior for your specific use case.
+     */
+    systemPrompt?: string;
 };
 /**
  * Classification result from the Guard API
@@ -203,6 +208,7 @@ declare function guard(config?: GuardConfig): ai.Tool<{
     text?: string | undefined;
     file?: string | undefined;
     url?: string | undefined;
+    systemPrompt?: string | undefined;
 }, GuardResponse>;
 
 /**
