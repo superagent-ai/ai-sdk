@@ -17,18 +17,6 @@ export type {
   RedactUsage,
 } from "./tools/redact";
 
-export { verify } from "./tools/verify";
-export type {
-  VerifyConfig,
-  VerifyResponse,
-  VerifyChoice,
-  VerifyUsage,
-  VerifySource,
-  VerifyClaim,
-  VerifyMessageContent,
-  ClaimSourceRef,
-} from "./tools/verify";
-
 // Re-export useful types from the safety-agent SDK
 export type {
   TokenUsage,

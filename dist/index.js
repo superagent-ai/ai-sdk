@@ -127,62 +127,10 @@ function redact(config = {}) {
   });
 }
 
-// src/tools/verify.ts
-import { tool as tool3 } from "ai";
-import { z as z3 } from "zod";
-function verify(config = {}) {
-  const { apiKey = process.env.SUPERAGENT_API_KEY } = config;
-  return tool3({
-    description: "Fact-check text by verifying claims against provided source materials. Use this to validate statements, check accuracy of information, and identify unsupported claims.",
-    inputSchema: z3.object({
-      text: z3.string().min(1).describe("The text containing claims to verify"),
-      sources: z3.array(
-        z3.object({
-          name: z3.string().describe("Name/title of the source"),
-          content: z3.string().describe("The content of the source material"),
-          url: z3.string().url().optional().describe("Optional URL reference for the source")
-        })
-      ).min(1).describe("Array of source materials to verify claims against")
-    }),
-    execute: async ({ text, sources }) => {
-      if (!apiKey) {
-        throw new Error(
-          "SUPERAGENT_API_KEY is required. Set it in environment variables or pass it in config."
-        );
-      }
-      const requestBody = { text, sources };
-      try {
-        const response = await fetch("https://app.superagent.sh/api/verify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`
-          },
-          body: JSON.stringify(requestBody)
-        });
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `Verify API error: ${response.status} - ${errorText}`
-          );
-        }
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        if (error instanceof Error) {
-          throw new Error(`Failed to verify with Superagent: ${error.message}`);
-        }
-        throw error;
-      }
-    }
-  });
-}
-
 // src/index.ts
 import { createClient as createClient3 } from "@superagent-ai/safety-agent";
 export {
   createClient3 as createClient,
   guard,
-  redact,
-  verify
+  redact
 };

@@ -1,5 +1,5 @@
 import { gateway, generateText, stepCountIs } from "ai";
-import { guard, redact, verify } from "./index";
+import { guard, redact } from "./index";
 
 async function testGuard() {
   console.log("=== Testing Guard Tool ===\n");
@@ -70,59 +70,11 @@ async function testRedactWithRewrite() {
   console.dir(result.steps, { depth: null });
 }
 
-async function testVerify() {
-  console.log("\n=== Testing Verify Tool (True Claims) ===\n");
-
-  const result = await generateText({
-    model: gateway("openai/gpt-4o-mini"),
-    prompt: `Verify the following claims against the provided sources:
-
-Text to verify: "Superagent was founded in 2023 and provides AI security guardrails."
-
-Sources:
-- Name: "About Superagent"
-  Content: "Superagent is a company founded in 2023 that specializes in AI security solutions including guardrails, PII redaction, and prompt injection detection."
-  URL: "https://superagent.sh/about"`,
-    tools: {
-      verify: verify(),
-    },
-    stopWhen: stepCountIs(5),
-  });
-
-  console.log("Result:", result.text);
-  console.dir(result.steps, { depth: null });
-}
-
-async function testVerifyFalseClaims() {
-  console.log("\n=== Testing Verify Tool (False Claims) ===\n");
-
-  const result = await generateText({
-    model: gateway("openai/gpt-4o-mini"),
-    prompt: `Verify the following claims against the provided sources:
-
-Text to verify: "Acme Corp was founded in 2015, has 10,000 employees, and is headquartered in Tokyo, Japan."
-
-Sources:
-- Name: "Acme Corp Official Website"
-  Content: "Acme Corp was established in 2020 in San Francisco, California. We currently employ 250 talented individuals across our offices in the United States."
-  URL: "https://acmecorp.example.com/about"`,
-    tools: {
-      verify: verify(),
-    },
-    stopWhen: stepCountIs(5),
-  });
-
-  console.log("Result:", result.text);
-  console.dir(result.steps, { depth: null });
-}
-
 async function main() {
   await testGuard();
   await testGuardWithModel();
   await testRedact();
   await testRedactWithRewrite();
-  await testVerify();
-  await testVerifyFalseClaims();
 }
 
 main().catch(console.error);
