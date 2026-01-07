@@ -1,6 +1,6 @@
 # Superagent AI SDK
 
-Superagent provides AI security guardrails. Add security tools to your LLMs in just a few lines of code. Protect your AI apps from prompt injection, redact PII, and verify claims. Works with AI SDK by Vercel.
+Superagent provides AI security guardrails. Add security tools to your LLMs in just a few lines of code. Protect your AI apps from prompt injection and redact PII. Works with AI SDK by Vercel.
 
 **Powered by [@superagent-ai/safety-agent](https://www.npmjs.com/package/@superagent-ai/safety-agent)**
 
@@ -12,7 +12,6 @@ Superagent provides AI security guardrails. Add security tools to your LLMs in j
 - [Tools](#tools)
   - [Guard](#guard)
   - [Redact](#redact)
-  - [Verify](#verify)
 - [All Options](#all-options)
 - [Supported Models](#supported-models)
 - [TypeScript Support](#typescript-support)
@@ -30,7 +29,7 @@ npm install @superagent-ai/ai-sdk
 
 ```typescript
 import { generateText, stepCountIs } from "ai";
-import { guard, redact, verify } from "@superagent-ai/ai-sdk";
+import { guard, redact } from "@superagent-ai/ai-sdk";
 import { openai } from "@ai-sdk/openai";
 
 const { text } = await generateText({
@@ -84,6 +83,7 @@ console.log(text);
 The guard tool accepts:
 - **text** - User input text to analyze
 - **url** - URL to content (text, PDF, or image) to analyze
+- **systemPrompt** - Optional system prompt to customize classification logic
 
 Response includes:
 - **classification** - `"pass"` or `"block"`
@@ -124,36 +124,6 @@ Response includes:
 - **findings** - List of what was redacted
 - **usage** - Token usage information
 
-### Verify
-
-Fact-check text by verifying claims against provided source materials.
-
-```typescript
-import { generateText, stepCountIs } from "ai";
-import { verify } from "@superagent-ai/ai-sdk";
-import { openai } from "@ai-sdk/openai";
-
-const { text } = await generateText({
-  model: openai('gpt-4o-mini'),
-  prompt: `Verify this claim: "The company was founded in 2020"
-  
-Sources:
-- Name: "About Us"
-  Content: "Founded in 2020, our company has grown rapidly..."
-  URL: "https://example.com/about"`,
-  tools: {
-    verify: verify(),
-  },
-  stopWhen: stepCountIs(5),
-});
-
-console.log(text);
-```
-
-The verify tool accepts:
-- **text** - Text containing claims to verify
-- **sources** - Array of source materials with `name`, `content`, and optional `url`
-
 ## All Options
 
 ### Guard Options
@@ -175,14 +145,6 @@ redact({
   model: "openai/gpt-4o-mini",  // Required, model to use for redaction
   entities: ["emails", "SSNs"], // Optional, custom entity types to redact
   rewrite: false,               // Optional, rewrite contextually vs placeholders
-})
-```
-
-### Verify Options
-
-```typescript
-verify({
-  apiKey: "your-api-key",  // Optional, uses SUPERAGENT_API_KEY env var by default
 })
 ```
 
@@ -214,23 +176,17 @@ Full TypeScript types included:
 ```typescript
 import { 
   guard, 
-  redact, 
-  verify,
+  redact,
   GuardConfig, 
   GuardResponse,
   RedactConfig,
   RedactResponse,
-  VerifyConfig,
-  VerifyResponse,
-  VerifySource,
-  VerifyClaim,
   TokenUsage,
   SupportedModel,
 } from "@superagent-ai/ai-sdk";
 
 const guardTool = guard({ model: "openai/gpt-4o-mini" });
 const redactTool = redact({ model: "openai/gpt-4o-mini" });
-const verifyTool = verify();
 ```
 
 ## Advanced Usage

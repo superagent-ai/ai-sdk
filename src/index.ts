@@ -18,10 +18,7 @@ export type {
 } from "./tools/redact";
 
 // Re-export useful types from the safety-agent SDK
-export type {
-  TokenUsage,
-  SupportedModel,
-} from "@superagent-ai/safety-agent";
+export type { TokenUsage, SupportedModel } from "@superagent-ai/safety-agent";
 
 // Re-export the createClient for advanced usage
 export { createClient } from "@superagent-ai/safety-agent";

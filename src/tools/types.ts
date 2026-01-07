@@ -156,4 +156,3 @@ export type RedactChoice = {
   };
   finish_reason: string;
 };
-
