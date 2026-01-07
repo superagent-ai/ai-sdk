@@ -1,9 +1,10 @@
 import { tool } from "ai";
 import { z } from "zod";
+import { createClient, type SupportedModel } from "@superagent-ai/safety-agent";
 import type { RedactConfig, RedactResponse } from "./types";
 
 /**
- * Creates a redact tool powered by Superagent for use with Vercel AI SDK
+ * Creates a redact tool powered by Superagent Safety Agent for use with Vercel AI SDK
  *
  * Analyzes text and redacts sensitive information such as SSNs, emails,
  * phone numbers, and other PII/PHI.
@@ -14,7 +15,7 @@ import type { RedactConfig, RedactResponse } from "./types";
  * @example
  * ```ts
  * import { generateText } from "ai";
- * import { redact } from "@superagent/ai-sdk";
+ * import { redact } from "@superagent-ai/ai-sdk";
  * import { openai } from "@ai-sdk/openai";
  *
  * // Just set SUPERAGENT_API_KEY in .env, then:
@@ -28,7 +29,15 @@ import type { RedactConfig, RedactResponse } from "./types";
  * ```
  */
 export function redact(config: RedactConfig = {}) {
-  const { apiKey = process.env.SUPERAGENT_API_KEY, entities } = config;
+  const {
+    apiKey = process.env.SUPERAGENT_API_KEY,
+    entities,
+    model: configModel,
+    rewrite,
+  } = config;
+
+  // Create the safety agent client
+  const client = createClient({ apiKey });
 
   return tool({
     description:
@@ -44,45 +53,61 @@ export function redact(config: RedactConfig = {}) {
         .describe(
           "Optional array of custom entity types to redact. If not provided, defaults to standard PII entities (SSNs, emails, phone numbers, etc.)"
         ),
+      model: z
+        .string()
+        .optional()
+        .describe(
+          'Model to use for redaction. Format: "provider/model" (e.g., "openai/gpt-4o-mini"). Required if not set in config.'
+        ),
+      rewrite: z
+        .boolean()
+        .optional()
+        .describe(
+          "When true, rewrites text contextually instead of using placeholders. Default: false"
+        ),
     }),
-    execute: async ({ text, entities: inputEntities }) => {
-      if (!apiKey) {
+    execute: async ({
+      text,
+      entities: inputEntities,
+      model: inputModel,
+      rewrite: inputRewrite,
+    }) => {
+      // Use input entities, fall back to config entities
+      const entitiesToUse = inputEntities || entities;
+
+      // Use input model, fall back to config model
+      const modelToUse = inputModel || configModel;
+
+      if (!modelToUse) {
         throw new Error(
-          "SUPERAGENT_API_KEY is required. Set it in environment variables or pass it in config."
+          "Model is required for redaction. Provide it in the tool call or in the config."
         );
       }
 
-      // Build request body
-      const requestBody: { text: string; entities?: string[] } = { text };
-
-      // Use input entities, fall back to config entities
-      const entitiesToUse = inputEntities || entities;
-      if (entitiesToUse && entitiesToUse.length > 0) {
-        requestBody.entities = entitiesToUse;
-      }
+      // Use input rewrite, fall back to config rewrite
+      const rewriteToUse = inputRewrite ?? rewrite;
 
       try {
-        const response = await fetch("https://app.superagent.sh/api/redact", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify(requestBody),
+        const result = await client.redact({
+          input: text,
+          model: modelToUse as SupportedModel,
+          entities: entitiesToUse,
+          rewrite: rewriteToUse,
         });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `Redact API error: ${response.status} - ${errorText}`
-          );
-        }
+        // Return the response in the expected format
+        const response: RedactResponse = {
+          redacted: result.redacted,
+          findings: result.findings,
+          usage: result.usage,
+        };
 
-        const data = (await response.json()) as RedactResponse;
-        return data;
+        return response;
       } catch (error) {
         if (error instanceof Error) {
-          throw new Error(`Failed to redact with Superagent: ${error.message}`);
+          throw new Error(
+            `Failed to redact with Safety Agent: ${error.message}`
+          );
         }
         throw error;
       }
