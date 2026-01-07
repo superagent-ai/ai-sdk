@@ -30,6 +30,9 @@
   ],
   "author": "Superagent",
   "license": "MIT",
+  "dependencies": {
+    "@superagent-ai/safety-agent": "^0.1.6"
+  },
   "devDependencies": {
     "@types/node": "^24.10.1",
     "dotenv": "^17.2.3",

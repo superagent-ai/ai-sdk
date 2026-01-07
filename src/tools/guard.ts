@@ -1,9 +1,10 @@
 import { tool } from "ai";
 import { z } from "zod";
+import { createClient, type SupportedModel } from "@superagent-ai/safety-agent";
 import type { GuardConfig, GuardResponse } from "./types";
 
 /**
- * Creates a guard tool powered by Superagent for use with Vercel AI SDK
+ * Creates a guard tool powered by Superagent Safety Agent for use with Vercel AI SDK
  *
  * Classifies user inputs to detect malicious intent such as prompt injection,
  * system prompt extraction, or data exfiltration attempts.
@@ -14,7 +15,7 @@ import type { GuardConfig, GuardResponse } from "./types";
  * @example
  * ```ts
  * import { generateText } from "ai";
- * import { guard } from "@superagent/ai-sdk";
+ * import { guard } from "@superagent-ai/ai-sdk";
  * import { openai } from "@ai-sdk/openai";
  *
  * // Just set SUPERAGENT_API_KEY in .env, then:
@@ -28,7 +29,15 @@ import type { GuardConfig, GuardResponse } from "./types";
  * ```
  */
 export function guard(config: GuardConfig = {}) {
-  const { apiKey = process.env.SUPERAGENT_API_KEY, systemPrompt } = config;
+  const {
+    apiKey = process.env.SUPERAGENT_API_KEY,
+    systemPrompt,
+    model,
+    chunkSize,
+  } = config;
+
+  // Create the safety agent client
+  const client = createClient({ apiKey });
 
   return tool({
     description:
@@ -38,20 +47,14 @@ export function guard(config: GuardConfig = {}) {
         .string()
         .optional()
         .describe(
-          "The user input text to analyze for security threats. Provide either text, file, or url."
-        ),
-      file: z
-        .string()
-        .optional()
-        .describe(
-          "Base64-encoded PDF file to analyze (format: data:application/pdf;base64,...). Provide either text, file, or url."
+          "The user input text to analyze for security threats. Provide either text or url."
         ),
       url: z
         .string()
         .url()
         .optional()
         .describe(
-          "URL to a PDF file to download and analyze for security threats. Provide either text, file, or url."
+          "URL to content (text, PDF, or image) to download and analyze for security threats. Provide either text or url."
         ),
       systemPrompt: z
         .string()
@@ -59,57 +62,50 @@ export function guard(config: GuardConfig = {}) {
         .describe(
           "Optional system prompt to customize the classification logic and steer the guard behavior."
         ),
+      model: z
+        .string()
+        .optional()
+        .describe(
+          'Optional model to use for classification. Format: "provider/model" (e.g., "openai/gpt-4o-mini")'
+        ),
     }),
-    execute: async ({ text, file, url, systemPrompt: runtimeSystemPrompt }) => {
-      if (!apiKey) {
-        throw new Error(
-          "SUPERAGENT_API_KEY is required. Set it in environment variables or pass it in config."
-        );
-      }
-
+    execute: async ({
+      text,
+      url,
+      systemPrompt: runtimeSystemPrompt,
+      model: runtimeModel,
+    }) => {
       // Validate that at least one input is provided
-      if (!text && !file && !url) {
-        throw new Error("At least one of text, file, or url must be provided.");
+      if (!text && !url) {
+        throw new Error("At least one of text or url must be provided.");
       }
 
-      // Build request body
-      const requestBody: Record<string, string> = {};
-
-      if (text) {
-        requestBody.text = text;
-      }
-
-      if (file) {
-        requestBody.file = file;
-      }
-
-      if (url) {
-        requestBody.url = url;
-      }
+      // Determine the input - text takes precedence over url
+      const input = text || url!;
 
       // Runtime systemPrompt takes precedence over config
       const effectiveSystemPrompt = runtimeSystemPrompt ?? systemPrompt;
-      if (effectiveSystemPrompt) {
-        requestBody.system_prompt = effectiveSystemPrompt;
-      }
+
+      // Runtime model takes precedence over config
+      const effectiveModel = runtimeModel ?? model;
 
       try {
-        const response = await fetch("https://app.superagent.sh/api/guard", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify(requestBody),
+        const result = await client.guard({
+          input,
+          systemPrompt: effectiveSystemPrompt,
+          model: effectiveModel as SupportedModel | undefined,
+          chunkSize,
         });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Guard API error: ${response.status} - ${errorText}`);
-        }
+        // Return the response in the expected format
+        const response: GuardResponse = {
+          classification: result.classification,
+          violation_types: result.violation_types,
+          cwe_codes: result.cwe_codes,
+          usage: result.usage,
+        };
 
-        const data = (await response.json()) as GuardResponse;
-        return data;
+        return response;
       } catch (error) {
         if (error instanceof Error) {
           throw new Error(`Failed to analyze with Guard: ${error.message}`);
