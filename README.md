@@ -22,14 +22,14 @@ Superagent provides AI security guardrails. Add security tools to your LLMs in j
 ## Installation
 
 ```bash
-npm install @superagent-ai/ai-sdk
+npm install @superagent-labs/ai-sdk
 ```
 
 ## Quick Start
 
 ```typescript
 import { generateText, stepCountIs } from "ai";
-import { guard, redact } from "@superagent-ai/ai-sdk";
+import { guard, redact } from "@superagent-labs/ai-sdk";
 import { openai } from "@ai-sdk/openai";
 
 const { text } = await generateText({
@@ -65,7 +65,7 @@ Detect prompt injection, system prompt extraction, and other security threats in
 
 ```typescript
 import { generateText, stepCountIs } from "ai";
-import { guard } from "@superagent-ai/ai-sdk";
+import { guard } from "@superagent-labs/ai-sdk";
 import { openai } from "@ai-sdk/openai";
 
 const { text } = await generateText({
@@ -97,7 +97,7 @@ Remove sensitive information (PII/PHI) from text including SSNs, emails, phone n
 
 ```typescript
 import { generateText, stepCountIs } from "ai";
-import { redact } from "@superagent-ai/ai-sdk";
+import { redact } from "@superagent-labs/ai-sdk";
 import { openai } from "@ai-sdk/openai";
 
 const { text } = await generateText({
@@ -183,7 +183,7 @@ import {
   RedactResponse,
   TokenUsage,
   SupportedModel,
-} from "@superagent-ai/ai-sdk";
+} from "@superagent-labs/ai-sdk";
 
 const guardTool = guard({ model: "openai/gpt-4o-mini" });
 const redactTool = redact({ model: "openai/gpt-4o-mini" });
@@ -194,7 +194,7 @@ const redactTool = redact({ model: "openai/gpt-4o-mini" });
 For direct access to the Safety Agent client:
 
 ```typescript
-import { createClient } from "@superagent-ai/ai-sdk";
+import { createClient } from "@superagent-labs/ai-sdk";
 
 const client = createClient({ apiKey: "your-api-key" });
 

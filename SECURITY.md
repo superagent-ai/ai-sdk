@@ -3,7 +3,7 @@
 ## Supported Versions
 
 Security updates are provided for the latest published version of
-`@superagent-ai/ai-sdk`. Please upgrade to the latest version before reporting
+`@superagent-labs/ai-sdk`. Please upgrade to the latest version before reporting
 an issue.
 
 ## Reporting a Vulnerability
