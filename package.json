@@ -1,6 +1,6 @@
 {
   "name": "@superagent-ai/ai-sdk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Superagent safety agent tool for Vercel AI SDK",
   "type": "module",
   "main": "./dist/index.js",
@@ -35,13 +35,14 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "ai": "6.0.237",
     "dotenv": "^17.2.3",
     "tsup": "^8.5.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "ai": "^5.0.0",
+    "ai": "^6.0.214",
     "zod": "^4.0.0"
   }
 }
