@@ -1,7 +1,7 @@
 // src/tools/guard.ts
 import { tool } from "ai";
 import { z } from "zod";
-import { createClient } from "@superagent-ai/safety-agent";
+import { createClient } from "safety-agent";
 function guard(config = {}) {
   const {
     apiKey = process.env.SUPERAGENT_API_KEY,
@@ -65,7 +65,7 @@ function guard(config = {}) {
 // src/tools/redact.ts
 import { tool as tool2 } from "ai";
 import { z as z2 } from "zod";
-import { createClient as createClient2 } from "@superagent-ai/safety-agent";
+import { createClient as createClient2 } from "safety-agent";
 function redact(config = {}) {
   const {
     apiKey = process.env.SUPERAGENT_API_KEY,
@@ -128,7 +128,7 @@ function redact(config = {}) {
 }
 
 // src/index.ts
-import { createClient as createClient3 } from "@superagent-ai/safety-agent";
+import { createClient as createClient3 } from "safety-agent";
 export {
   createClient3 as createClient,
   guard,

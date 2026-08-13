@@ -1,6 +1,6 @@
 import { tool } from "ai";
 import { z } from "zod";
-import { createClient, type SupportedModel } from "@superagent-ai/safety-agent";
+import { createClient, type SupportedModel } from "safety-agent";
 import type { RedactConfig, RedactResponse } from "./types";
 
 /**
