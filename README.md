@@ -2,7 +2,7 @@
 
 Superagent provides AI security guardrails. Add security tools to your LLMs in just a few lines of code. Protect your AI apps from prompt injection and redact PII. Works with AI SDK by Vercel.
 
-**Powered by [@superagent-ai/safety-agent](https://www.npmjs.com/package/@superagent-ai/safety-agent)**
+**Powered by [safety-agent](https://www.npmjs.com/package/safety-agent)**
 
 ## Table of Contents
 

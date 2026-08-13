@@ -30,9 +30,6 @@
   ],
   "author": "Superagent",
   "license": "MIT",
-  "dependencies": {
-    "@superagent-ai/safety-agent": "^0.1.6"
-  },
   "devDependencies": {
     "@types/node": "^24.10.1",
     "ai": "6.0.237",
@@ -44,5 +41,8 @@
   "peerDependencies": {
     "ai": "^6.0.214",
     "zod": "^4.0.0"
+  },
+  "dependencies": {
+    "safety-agent": "^0.1.7"
   }
 }

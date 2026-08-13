@@ -7,7 +7,7 @@ export type {
   RedactResponse as SafetyAgentRedactResponse,
   TokenUsage,
   SupportedModel,
-} from "@superagent-ai/safety-agent";
+} from "safety-agent";
 
 /**
  * Configuration options for the Superagent Guard tool

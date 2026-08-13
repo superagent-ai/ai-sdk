@@ -1,5 +1,5 @@
 import * as ai from 'ai';
-export { SupportedModel, TokenUsage, createClient } from '@superagent-ai/safety-agent';
+export { SupportedModel, TokenUsage, createClient } from 'safety-agent';
 
 /**
  * Configuration options for the Superagent Guard tool
