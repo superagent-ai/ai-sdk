@@ -15,7 +15,7 @@ import type { GuardConfig, GuardResponse } from "./types";
  * @example
  * ```ts
  * import { generateText } from "ai";
- * import { guard } from "@superagent-ai/ai-sdk";
+ * import { guard } from "@superagent-labs/ai-sdk";
  * import { openai } from "@ai-sdk/openai";
  *
  * // Just set SUPERAGENT_API_KEY in .env, then:

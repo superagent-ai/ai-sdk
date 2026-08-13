@@ -1,5 +1,5 @@
 {
-  "name": "@superagent-ai/ai-sdk",
+  "name": "@superagent-labs/ai-sdk",
   "version": "0.0.4",
   "description": "Superagent safety agent tool for Vercel AI SDK",
   "type": "module",

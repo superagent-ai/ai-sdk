@@ -142,7 +142,7 @@ type RedactChoice = {
  * @example
  * ```ts
  * import { generateText } from "ai";
- * import { guard } from "@superagent-ai/ai-sdk";
+ * import { guard } from "@superagent-labs/ai-sdk";
  * import { openai } from "@ai-sdk/openai";
  *
  * // Just set SUPERAGENT_API_KEY in .env, then:
@@ -174,7 +174,7 @@ declare function guard(config?: GuardConfig): ai.Tool<{
  * @example
  * ```ts
  * import { generateText } from "ai";
- * import { redact } from "@superagent-ai/ai-sdk";
+ * import { redact } from "@superagent-labs/ai-sdk";
  * import { openai } from "@ai-sdk/openai";
  *
  * // Just set SUPERAGENT_API_KEY in .env, then:
