@@ -210,6 +210,24 @@ const redactResult = await client.redact({
 });
 ```
 
+## Security
+
+Read [SECURITY.md](SECURITY.md)
+
+<a href="https://www.superagent.sh">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://www.superagent.sh/api/badge/superagent-ai/ai-sdk/shield.svg?theme=dark&accent=teal&variant=streak">
+    <img alt="Security posture verified by Superagent" src="https://www.superagent.sh/api/badge/superagent-ai/ai-sdk/shield.svg?theme=light&accent=teal&variant=streak">
+  </picture>
+</a>
+
+<a href="https://www.superagent.sh/verify/superagent-ai/ai-sdk">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://www.superagent.sh/api/badge/superagent-ai/ai-sdk/card.svg?theme=dark&accent=teal">
+    <img alt="Security posture verified by Superagent" src="https://www.superagent.sh/api/badge/superagent-ai/ai-sdk/card.svg?theme=light&accent=teal">
+  </picture>
+</a>
+
 ## Links
 
 - [Superagent Website](https://superagent.sh) - Learn more about Superagent
